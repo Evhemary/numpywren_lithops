@@ -1,0 +1,46 @@
+# Change to .lithops_config after filling in the data
+lithops:
+    backend: aws_lambda
+    storage: aws_s3
+    #storage_bucket: bogdan-pywren-830
+    log_level: DEBUG # One of: WARNING, INFO, DEBUG, ERROR, CRITICAL
+    data_cleaner: False
+    execution_timeout: 895
+
+#serverless:
+#    backend: aws_lambda
+#    runtime_memory: 2048 # 1792MB provides 1 full vCPU
+#    runtime_timeout: 900 # 15 minutes, for those long low parallelism experiments
+
+aws:
+    access_key_id: <access_key_id>
+    secret_access_key: <secret_access_key>
+    account_id: <account_id>
+
+aws_lambda:
+    execution_role: arn:aws:iam::<account_id>:role/lithops-execution-role
+    region_name: us-east-1
+    runtime_memory: 2048
+    runtime_timeout: 900
+
+aws_s3:
+    storage_bucket: lithops-experiment
+    region_name: us-east-1
+
+#minio:
+#	storage_bucket:<Bucket_Name>
+#	endpoint:<Endpoint_url>
+#	access_key:minioadmin
+#	secret_key:minioadmin
+
+#control_plane:
+#  control_plane_prefix: numpywren.control
+#  ec2_instance_type: m5.24xlarge
+#  ec2_ssh_key: imagenet_exps
+#  idle_terminate_granularity: 1200
+#  max_idle_time: 300
+#  password: potato
+#  port: 6379
+#  spot_price: 0.0
+  #target_ami: ami-759bc50a
+#  target_ami: ami-db710fa3

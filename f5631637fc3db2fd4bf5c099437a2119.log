@@ -1,0 +1,395 @@
+2021-10-14 09:15:10,895 - root - INFO - Logging to f5631637fc3db2fd4bf5c099437a2119.log
+2021-10-14 09:17:02,673 - root - INFO - Logging to f5631637fc3db2fd4bf5c099437a2119.log
+2021-10-14 09:23:48,037 - root - DEBUG - Python AST:
+FunctionDef(name='CHOLESKY',
+    args=arguments(
+        args=[arg(arg='O', annotation=Name(id='BigMatrix')),
+            arg(arg='I', annotation=Name(id='BigMatrix')),
+            arg(arg='S', annotation=Name(id='BigMatrix')),
+            arg(arg='N', annotation=Name(id='int')),
+            arg(arg='truncate', annotation=Name(id='int'))],
+        vararg=None,
+        kwonlyargs=[],
+        kw_defaults=[],
+        kwarg=None,
+        defaults=[]),
+    body=[
+        Assign(
+            targets=[Subscript(value=Name(id='O'), slice=Index(value=Tuple(elts=[Num(n=0), Num(n=0)])))],
+            value=Call(func=Name(id='chol'),
+                args=[Subscript(value=Name(id='I'), slice=Index(value=Tuple(elts=[Num(n=0), Num(n=0)])))],
+                keywords=[])),
+        For(target=Name(id='j'),
+            iter=Call(func=Name(id='range'),
+                args=[Num(n=1), BinOp(left=Name(id='N'), op=Sub, right=Name(id='truncate'))],
+                keywords=[]),
+            body=[
+                Assign(
+                    targets=[Subscript(value=Name(id='O'), slice=Index(value=Tuple(elts=[Name(id='j'), Num(n=0)])))],
+                    value=Call(func=Name(id='trsm'),
+                        args=[
+                            Subscript(value=Name(id='O'), slice=Index(value=Tuple(elts=[Num(n=0), Num(n=0)]))),
+                            Subscript(value=Name(id='I'), slice=Index(value=Tuple(elts=[Name(id='j'), Num(n=0)])))],
+                        keywords=[])),
+                For(target=Name(id='k'),
+                    iter=Call(func=Name(id='range'),
+                        args=[Num(n=1), BinOp(left=Name(id='j'), op=Add, right=Num(n=1))],
+                        keywords=[]),
+                    body=[
+                        Assign(
+                            targets=[
+                                Subscript(value=Name(id='S'),
+                                    slice=Index(value=Tuple(elts=[Num(n=1), Name(id='j'), Name(id='k')])))],
+                            value=Call(func=Name(id='syrk'),
+                                args=[
+                                    Subscript(value=Name(id='I'),
+                                        slice=Index(value=Tuple(elts=[Name(id='j'), Name(id='k')]))),
+                                    Subscript(value=Name(id='O'),
+                                        slice=Index(value=Tuple(elts=[Name(id='j'), Num(n=0)]))),
+                                    Subscript(value=Name(id='O'),
+                                        slice=Index(value=Tuple(elts=[Name(id='k'), Num(n=0)])))],
+                                keywords=[]))],
+                    orelse=[])],
+            orelse=[]),
+        For(target=Name(id='i'),
+            iter=Call(func=Name(id='range'),
+                args=[Num(n=1), BinOp(left=Name(id='N'), op=Sub, right=Name(id='truncate'))],
+                keywords=[]),
+            body=[
+                Assign(
+                    targets=[
+                        Subscript(value=Name(id='O'), slice=Index(value=Tuple(elts=[Name(id='i'), Name(id='i')])))],
+                    value=Call(func=Name(id='chol'),
+                        args=[
+                            Subscript(value=Name(id='S'),
+                                slice=Index(value=Tuple(elts=[Name(id='i'), Name(id='i'), Name(id='i')])))],
+                        keywords=[])),
+                For(target=Name(id='j'),
+                    iter=Call(func=Name(id='range'),
+                        args=[BinOp(left=Name(id='i'), op=Add, right=Num(n=1)),
+                            BinOp(left=Name(id='N'), op=Sub, right=Name(id='truncate'))],
+                        keywords=[]),
+                    body=[
+                        Assign(
+                            targets=[
+                                Subscript(value=Name(id='O'),
+                                    slice=Index(value=Tuple(elts=[Name(id='j'), Name(id='i')])))],
+                            value=Call(func=Name(id='trsm'),
+                                args=[
+                                    Subscript(value=Name(id='O'),
+                                        slice=Index(value=Tuple(elts=[Name(id='i'), Name(id='i')]))),
+                                    Subscript(value=Name(id='S'),
+                                        slice=Index(value=Tuple(elts=[Name(id='i'), Name(id='j'), Name(id='i')])))],
+                                keywords=[])),
+                        For(target=Name(id='k'),
+                            iter=Call(func=Name(id='range'),
+                                args=[BinOp(left=Name(id='i'), op=Add, right=Num(n=1)),
+                                    BinOp(left=Name(id='j'), op=Add, right=Num(n=1))],
+                                keywords=[]),
+                            body=[
+                                Assign(
+                                    targets=[
+                                        Subscript(value=Name(id='S'),
+                                            slice=Index(
+                                                value=Tuple(
+                                                    elts=[BinOp(left=Name(id='i'), op=Add, right=Num(n=1)),
+                                                        Name(id='j'),
+                                                        Name(id='k')])))],
+                                    value=Call(func=Name(id='syrk'),
+                                        args=[
+                                            Subscript(value=Name(id='S'),
+                                                slice=Index(value=Tuple(elts=[Name(id='i'), Name(id='j'), Name(id='k')]),
+                                                    )),
+                                            Subscript(value=Name(id='O'),
+                                                slice=Index(value=Tuple(elts=[Name(id='j'), Name(id='i')]))),
+                                            Subscript(value=Name(id='O'),
+                                                slice=Index(value=Tuple(elts=[Name(id='k'), Name(id='i')])))],
+                                        keywords=[]))],
+                            orelse=[])],
+                    orelse=[])],
+            orelse=[])],
+    decorator_list=[],
+    returns=None)
+
+2021-10-14 09:23:48,038 - root - DEBUG - IR AST:
+FuncDef(name='CHOLESKY',
+    args=['O', 'I', 'S', 'N', 'truncate'],
+    body=[
+        RemoteCallAbstract(compute=<function chol at 0x7f332ae8d290>,
+            output=IndexExpr(matrix_name='O', indices=[IntConst(val=0, type=None), IntConst(val=0, type=None)]),
+            args=[IndexExpr(matrix_name='I', indices=[IntConst(val=0, type=None), IntConst(val=0, type=None)])],
+            kwargs=None,
+            type=None),
+        For(var='j',
+            min=IntConst(val=1, type=None),
+            max=BinOp(op='Sub', left=Ref(name='N', type=None), right=Ref(name='truncate', type=None), type=None),
+            step=IntConst(val=1, type=None),
+            body=[
+                RemoteCallAbstract(compute=<function trsm at 0x7f332ae8d560>,
+                    output=IndexExpr(matrix_name='O', indices=[Ref(name='j', type=None), IntConst(val=0, type=None)]),
+                    args=[
+                        IndexExpr(matrix_name='O', indices=[IntConst(val=0, type=None), IntConst(val=0, type=None)]),
+                        IndexExpr(matrix_name='I', indices=[Ref(name='j', type=None), IntConst(val=0, type=None)])],
+                    kwargs=None,
+                    type=None),
+                For(var='k',
+                    min=IntConst(val=1, type=None),
+                    max=BinOp(op='Add', left=Ref(name='j', type=None), right=IntConst(val=1, type=None), type=None),
+                    step=IntConst(val=1, type=None),
+                    body=[
+                        RemoteCallAbstract(compute=<function syrk at 0x7f332ae8d170>,
+                            output=IndexExpr(matrix_name='S',
+                                indices=[IntConst(val=1, type=None),
+                                    Ref(name='j', type=None),
+                                    Ref(name='k', type=None)]),
+                            args=[
+                                IndexExpr(matrix_name='I',
+                                    indices=[Ref(name='j', type=None), Ref(name='k', type=None)]),
+                                IndexExpr(matrix_name='O',
+                                    indices=[Ref(name='j', type=None), IntConst(val=0, type=None)]),
+                                IndexExpr(matrix_name='O',
+                                    indices=[Ref(name='k', type=None), IntConst(val=0, type=None)])],
+                            kwargs=None,
+                            type=None)])]),
+        For(var='i',
+            min=IntConst(val=1, type=None),
+            max=BinOp(op='Sub', left=Ref(name='N', type=None), right=Ref(name='truncate', type=None), type=None),
+            step=IntConst(val=1, type=None),
+            body=[
+                RemoteCallAbstract(compute=<function chol at 0x7f332ae8d290>,
+                    output=IndexExpr(matrix_name='O', indices=[Ref(name='i', type=None), Ref(name='i', type=None)]),
+                    args=[
+                        IndexExpr(matrix_name='S',
+                            indices=[Ref(name='i', type=None), Ref(name='i', type=None), Ref(name='i', type=None)])],
+                    kwargs=None,
+                    type=None),
+                For(var='j',
+                    min=BinOp(op='Add', left=Ref(name='i', type=None), right=IntConst(val=1, type=None), type=None),
+                    max=BinOp(op='Sub',
+                        left=Ref(name='N', type=None),
+                        right=Ref(name='truncate', type=None),
+                        type=None),
+                    step=IntConst(val=1, type=None),
+                    body=[
+                        RemoteCallAbstract(compute=<function trsm at 0x7f332ae8d560>,
+                            output=IndexExpr(matrix_name='O',
+                                indices=[Ref(name='j', type=None), Ref(name='i', type=None)]),
+                            args=[
+                                IndexExpr(matrix_name='O',
+                                    indices=[Ref(name='i', type=None), Ref(name='i', type=None)]),
+                                IndexExpr(matrix_name='S',
+                                    indices=[Ref(name='i', type=None),
+                                        Ref(name='j', type=None),
+                                        Ref(name='i', type=None)])],
+                            kwargs=None,
+                            type=None),
+                        For(var='k',
+                            min=BinOp(op='Add',
+                                left=Ref(name='i', type=None),
+                                right=IntConst(val=1, type=None),
+                                type=None),
+                            max=BinOp(op='Add',
+                                left=Ref(name='j', type=None),
+                                right=IntConst(val=1, type=None),
+                                type=None),
+                            step=IntConst(val=1, type=None),
+                            body=[
+                                RemoteCallAbstract(compute=<function syrk at 0x7f332ae8d170>,
+                                    output=IndexExpr(matrix_name='S',
+                                        indices=[
+                                            BinOp(op='Add',
+                                                left=Ref(name='i', type=None),
+                                                right=IntConst(val=1, type=None),
+                                                type=None),
+                                            Ref(name='j', type=None),
+                                            Ref(name='k', type=None)]),
+                                    args=[
+                                        IndexExpr(matrix_name='S',
+                                            indices=[Ref(name='i', type=None),
+                                                Ref(name='j', type=None),
+                                                Ref(name='k', type=None)]),
+                                        IndexExpr(matrix_name='O',
+                                            indices=[Ref(name='j', type=None), Ref(name='i', type=None)]),
+                                        IndexExpr(matrix_name='O',
+                                            indices=[Ref(name='k', type=None), Ref(name='i', type=None)])],
+                                    kwargs=None,
+                                    type=None)])])])],
+    arg_types=[<class 'numpywren.matrix.BigMatrix'>,
+        <class 'numpywren.matrix.BigMatrix'>,
+        <class 'numpywren.matrix.BigMatrix'>,
+        <class 'int'>,
+        <class 'int'>])
+
+2021-10-14 09:23:48,039 - root - DEBUG - typed IR AST:
+FuncDef(name='CHOLESKY',
+    args=['O', 'I', 'S', 'N', 'truncate'],
+    body=[
+        RemoteCallAbstract(compute=<function chol at 0x7f332ae8d290>,
+            output=[
+                IndexExpr(matrix_name='O',
+                    indices=[IntConst(val=0, type=<class 'numpywren.frontend.ConstIntType'>),
+                        IntConst(val=0, type=<class 'numpywren.frontend.ConstIntType'>)])],
+            args=[
+                IndexExpr(matrix_name='I',
+                    indices=[IntConst(val=0, type=<class 'numpywren.frontend.ConstIntType'>),
+                        IntConst(val=0, type=<class 'numpywren.frontend.ConstIntType'>)])],
+            kwargs=None,
+            type=<class 'type'>),
+        For(var='j',
+            min=IntConst(val=1, type=<class 'numpywren.frontend.ConstIntType'>),
+            max=BinOp(op='Sub',
+                left=Ref(name='N', type=<class 'numpywren.frontend.ConstIntType'>),
+                right=Ref(name='truncate', type=<class 'numpywren.frontend.ConstIntType'>),
+                type=<class 'numpywren.frontend.ConstIntType'>),
+            step=IntConst(val=1, type=<class 'numpywren.frontend.ConstIntType'>),
+            body=[
+                RemoteCallAbstract(compute=<function trsm at 0x7f332ae8d560>,
+                    output=[
+                        IndexExpr(matrix_name='O',
+                            indices=[Ref(name='j', type=<class 'numpywren.frontend.LinearIntType'>),
+                                IntConst(val=0, type=<class 'numpywren.frontend.ConstIntType'>)])],
+                    args=[
+                        IndexExpr(matrix_name='O',
+                            indices=[IntConst(val=0, type=<class 'numpywren.frontend.ConstIntType'>),
+                                IntConst(val=0, type=<class 'numpywren.frontend.ConstIntType'>)]),
+                        IndexExpr(matrix_name='I',
+                            indices=[Ref(name='j', type=<class 'numpywren.frontend.LinearIntType'>),
+                                IntConst(val=0, type=<class 'numpywren.frontend.ConstIntType'>)])],
+                    kwargs=None,
+                    type=<class 'type'>),
+                For(var='k',
+                    min=IntConst(val=1, type=<class 'numpywren.frontend.ConstIntType'>),
+                    max=BinOp(op='Add',
+                        left=Ref(name='j', type=<class 'numpywren.frontend.LinearIntType'>),
+                        right=IntConst(val=1, type=<class 'numpywren.frontend.ConstIntType'>),
+                        type=<class 'numpywren.frontend.LinearIntType'>),
+                    step=IntConst(val=1, type=<class 'numpywren.frontend.ConstIntType'>),
+                    body=[
+                        RemoteCallAbstract(compute=<function syrk at 0x7f332ae8d170>,
+                            output=[
+                                IndexExpr(matrix_name='S',
+                                    indices=[IntConst(val=1, type=<class 'numpywren.frontend.ConstIntType'>),
+                                        Ref(name='j', type=<class 'numpywren.frontend.LinearIntType'>),
+                                        Ref(name='k', type=<class 'numpywren.frontend.LinearIntType'>)])],
+                            args=[
+                                IndexExpr(matrix_name='I',
+                                    indices=[Ref(name='j', type=<class 'numpywren.frontend.LinearIntType'>),
+                                        Ref(name='k', type=<class 'numpywren.frontend.LinearIntType'>)]),
+                                IndexExpr(matrix_name='O',
+                                    indices=[Ref(name='j', type=<class 'numpywren.frontend.LinearIntType'>),
+                                        IntConst(val=0, type=<class 'numpywren.frontend.ConstIntType'>)]),
+                                IndexExpr(matrix_name='O',
+                                    indices=[Ref(name='k', type=<class 'numpywren.frontend.LinearIntType'>),
+                                        IntConst(val=0, type=<class 'numpywren.frontend.ConstIntType'>)])],
+                            kwargs=None,
+                            type=<class 'type'>)])]),
+        For(var='i',
+            min=IntConst(val=1, type=<class 'numpywren.frontend.ConstIntType'>),
+            max=BinOp(op='Sub',
+                left=Ref(name='N', type=<class 'numpywren.frontend.ConstIntType'>),
+                right=Ref(name='truncate', type=<class 'numpywren.frontend.ConstIntType'>),
+                type=<class 'numpywren.frontend.ConstIntType'>),
+            step=IntConst(val=1, type=<class 'numpywren.frontend.ConstIntType'>),
+            body=[
+                RemoteCallAbstract(compute=<function chol at 0x7f332ae8d290>,
+                    output=[
+                        IndexExpr(matrix_name='O',
+                            indices=[Ref(name='i', type=<class 'numpywren.frontend.LinearIntType'>),
+                                Ref(name='i', type=<class 'numpywren.frontend.LinearIntType'>)])],
+                    args=[
+                        IndexExpr(matrix_name='S',
+                            indices=[Ref(name='i', type=<class 'numpywren.frontend.LinearIntType'>),
+                                Ref(name='i', type=<class 'numpywren.frontend.LinearIntType'>),
+                                Ref(name='i', type=<class 'numpywren.frontend.LinearIntType'>)])],
+                    kwargs=None,
+                    type=<class 'type'>),
+                For(var='j',
+                    min=BinOp(op='Add',
+                        left=Ref(name='i', type=<class 'numpywren.frontend.LinearIntType'>),
+                        right=IntConst(val=1, type=<class 'numpywren.frontend.ConstIntType'>),
+                        type=<class 'numpywren.frontend.LinearIntType'>),
+                    max=BinOp(op='Sub',
+                        left=Ref(name='N', type=<class 'numpywren.frontend.ConstIntType'>),
+                        right=Ref(name='truncate', type=<class 'numpywren.frontend.ConstIntType'>),
+                        type=<class 'numpywren.frontend.ConstIntType'>),
+                    step=IntConst(val=1, type=<class 'numpywren.frontend.ConstIntType'>),
+                    body=[
+                        RemoteCallAbstract(compute=<function trsm at 0x7f332ae8d560>,
+                            output=[
+                                IndexExpr(matrix_name='O',
+                                    indices=[Ref(name='j', type=<class 'numpywren.frontend.LinearIntType'>),
+                                        Ref(name='i', type=<class 'numpywren.frontend.LinearIntType'>)])],
+                            args=[
+                                IndexExpr(matrix_name='O',
+                                    indices=[Ref(name='i', type=<class 'numpywren.frontend.LinearIntType'>),
+                                        Ref(name='i', type=<class 'numpywren.frontend.LinearIntType'>)]),
+                                IndexExpr(matrix_name='S',
+                                    indices=[Ref(name='i', type=<class 'numpywren.frontend.LinearIntType'>),
+                                        Ref(name='j', type=<class 'numpywren.frontend.LinearIntType'>),
+                                        Ref(name='i', type=<class 'numpywren.frontend.LinearIntType'>)])],
+                            kwargs=None,
+                            type=<class 'type'>),
+                        For(var='k',
+                            min=BinOp(op='Add',
+                                left=Ref(name='i', type=<class 'numpywren.frontend.LinearIntType'>),
+                                right=IntConst(val=1, type=<class 'numpywren.frontend.ConstIntType'>),
+                                type=<class 'numpywren.frontend.LinearIntType'>),
+                            max=BinOp(op='Add',
+                                left=Ref(name='j', type=<class 'numpywren.frontend.LinearIntType'>),
+                                right=IntConst(val=1, type=<class 'numpywren.frontend.ConstIntType'>),
+                                type=<class 'numpywren.frontend.LinearIntType'>),
+                            step=IntConst(val=1, type=<class 'numpywren.frontend.ConstIntType'>),
+                            body=[
+                                RemoteCallAbstract(compute=<function syrk at 0x7f332ae8d170>,
+                                    output=[
+                                        IndexExpr(matrix_name='S',
+                                            indices=[
+                                                BinOp(op='Add',
+                                                    left=Ref(name='i', type=<class 'numpywren.frontend.LinearIntType'>),
+                                                    right=IntConst(val=1,
+                                                        type=<class 'numpywren.frontend.ConstIntType'>),
+                                                    type=<class 'numpywren.frontend.LinearIntType'>),
+                                                Ref(name='j', type=<class 'numpywren.frontend.LinearIntType'>),
+                                                Ref(name='k', type=<class 'numpywren.frontend.LinearIntType'>)])],
+                                    args=[
+                                        IndexExpr(matrix_name='S',
+                                            indices=[Ref(name='i', type=<class 'numpywren.frontend.LinearIntType'>),
+                                                Ref(name='j', type=<class 'numpywren.frontend.LinearIntType'>),
+                                                Ref(name='k', type=<class 'numpywren.frontend.LinearIntType'>)]),
+                                        IndexExpr(matrix_name='O',
+                                            indices=[Ref(name='j', type=<class 'numpywren.frontend.LinearIntType'>),
+                                                Ref(name='i', type=<class 'numpywren.frontend.LinearIntType'>)]),
+                                        IndexExpr(matrix_name='O',
+                                            indices=[Ref(name='k', type=<class 'numpywren.frontend.LinearIntType'>),
+                                                Ref(name='i', type=<class 'numpywren.frontend.LinearIntType'>)])],
+                                    kwargs=None,
+                                    type=<class 'type'>)])])])],
+    arg_types=[<class 'numpywren.frontend.BigMatrixType'>,
+        <class 'numpywren.frontend.BigMatrixType'>,
+        <class 'numpywren.frontend.BigMatrixType'>,
+        <class 'numpywren.frontend.ConstIntType'>,
+        <class 'numpywren.frontend.ConstIntType'>])
+
+2021-10-14 09:30:58,832 - root - INFO - Starting with 16 cores
+2021-10-14 09:35:05,626 - root - DEBUG - 7: Up Workers: 16, Busy Workers: 14
+2021-10-14 09:35:20,403 - root - DEBUG - 21: Up Workers: 16, Busy Workers: 15
+2021-10-14 09:35:35,073 - root - DEBUG - 36: Up Workers: 16, Busy Workers: 16
+2021-10-14 09:35:50,488 - root - DEBUG - 52: Up Workers: 16, Busy Workers: 15
+2021-10-14 09:36:05,132 - root - DEBUG - 66: Up Workers: 16, Busy Workers: 10
+2021-10-14 09:36:20,582 - root - DEBUG - 81: Up Workers: 16, Busy Workers: 11
+2021-10-14 09:36:35,608 - root - DEBUG - 97: Up Workers: 16, Busy Workers: 10
+2021-10-14 09:36:50,318 - root - DEBUG - 111: Up Workers: 16, Busy Workers: 13
+2021-10-14 09:36:53,552 - root - INFO - launching 16 new tasks....
+2021-10-14 09:41:02,417 - root - DEBUG - 364: Up Workers: 16, Busy Workers: 20
+2021-10-14 09:41:17,063 - root - DEBUG - 378: Up Workers: 16, Busy Workers: 5
+2021-10-14 09:41:31,677 - root - DEBUG - 393: Up Workers: 16, Busy Workers: 5
+2021-10-14 09:41:46,425 - root - DEBUG - 407: Up Workers: 16, Busy Workers: 5
+2021-10-14 09:42:01,123 - root - DEBUG - 422: Up Workers: 16, Busy Workers: 5
+2021-10-14 09:42:15,733 - root - DEBUG - 437: Up Workers: 16, Busy Workers: 5
+2021-10-14 09:42:30,431 - root - DEBUG - 452: Up Workers: 16, Busy Workers: 5
+2021-10-14 09:42:45,081 - root - DEBUG - 466: Up Workers: 16, Busy Workers: 5
+2021-10-14 09:43:00,634 - root - DEBUG - 481: Up Workers: 16, Busy Workers: 5
+2021-10-14 09:43:03,828 - root - INFO - launching 16 new tasks....
+2021-10-14 09:43:29,641 - root - DEBUG - 510: Up Workers: 16, Busy Workers: 5
+2021-10-14 09:43:29,642 - root - INFO - Waiting: 0, Currently Processing: 0
+2021-10-14 09:43:29,642 - root - INFO - 510: Up Workers: 16, Busy Workers: 5

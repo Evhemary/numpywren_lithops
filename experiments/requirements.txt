@@ -1,0 +1,6 @@
+click==7.1.2
+lithops==2.5.3
+dill==0.3.3
+sympy==1.8
+asyncio==3.4.3
+pyyaml==5.4.1

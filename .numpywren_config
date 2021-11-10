@@ -1,0 +1,13 @@
+runtime:
+  bucket: ehemary-pywren-316
+  s3_key: pywren.runtime/pywren_runtime-3.6-numpywren.tar.gz
+  s3_bucket: ehemary-pywren-316
+s3:
+  bucket: lithops-numpywren-exp
+  lifespan: 1
+  prefix: npw
+logging:
+    level: INFO
+account:
+    account_id: <account_id>
+    aws_region: us-east-1
