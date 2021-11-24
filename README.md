@@ -10,6 +10,4 @@ How to run:
 What was changed compared to the original implementation:
 - Removed the control_plane and redis so it only makes use of s3 buckets
 - swapped pywren with lithops
-
-Current problem:
-- Lambda function crashes on line 18 in binops.py because ```bp``` object is not a tuple
+- Replace redis with dynamodb
