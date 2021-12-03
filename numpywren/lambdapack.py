@@ -71,7 +71,7 @@ class ProgramStatus(Enum):
     NOT_STARTED = 3
 
 
-def put(key, value, s3=True, s3_bucket="lithops-numpywren-exp"):
+def put(key, value, s3=True, s3_bucket=minio_bucket):
     # print(key, value)
     if (s3):
         # client = boto3.client('s3')
@@ -106,7 +106,7 @@ def upload(key, bucket, data):
     client.put_object(Bucket=bucket, Key=key, Body=data)
 
 
-def get(key, s3=True, s3_bucket="lithops-numpywren-exp"):
+def get(key, s3=True, s3_bucket=minio_bucket):
     if (s3):
         # client = boto3.client('s3')
         client = boto3.client('s3',
@@ -128,7 +128,7 @@ def get(key, s3=True, s3_bucket="lithops-numpywren-exp"):
         return obj
 
 
-def incr(key, amount=1, s3=True, s3_bucket='lithops-numpywren-exp'):
+def incr(key, amount=1, s3=True):
     if (s3):
         # read from S3
         print("incr:"+"dynamo"+"/"+key)
@@ -148,7 +148,7 @@ def incr(key, amount=1, s3=True, s3_bucket='lithops-numpywren-exp'):
         # put(key, response, s3_bucket=s3_bucket)
 
 
-def decr(key, amount, s3=True, s3_bucket='lithops-numpywren-exp'):
+def decr(key, amount, s3=True):
     if (s3):
         print("decr:"+"dynamo"+"/"+key)
         client = boto3.resource('dynamodb')

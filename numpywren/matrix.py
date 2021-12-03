@@ -536,7 +536,11 @@ class BigMatrix(object):
         while bio is None and n_tries <= max_n_tries:
             try:
                 print("get:"+self.bucket+"/"+key)
+                start = datetime.datetime.now()
                 resp = client.get_object(Bucket=self.bucket, Key=key)
+                end = datetime.datetime.now()
+                get_duration = (end - start).microseconds/1000
+                print('get_duration: '+str(get_duration)+'ms')
                 # async with resp['Body'] as stream:
                 #     matrix_bytes = await stream.read()
                 matrix_bytes = resp['Body'].read()
@@ -567,6 +571,7 @@ class BigMatrix(object):
         np.save(outb, X)
         # response = await client.put_object(Key=out_key,
         print("put:"+self.bucket+"/"+out_key)
+        start = datetime.datetime.now()
         response = client.put_object(Key=out_key,
                                            Bucket=self.bucket,
                                            Body=outb.getvalue())
@@ -593,6 +598,9 @@ class BigMatrix(object):
                           Bucket=self.bucket,
                           Body=json.dumps(header))
                         #   ACL="bucket-owner-full-control")
+        end = datetime.datetime.now()
+        put_duration = (end - start).microseconds/1000
+        print('put_duration: '+str(put_duration)+'ms')
 
     def __encode_dtype__(self, dtype):
         dtype_pickle = pickle.dumps(dtype)
