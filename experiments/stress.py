@@ -347,7 +347,13 @@ def run_experiment(problem_size, shard_size, pipeline, num_priorities, lru, eage
     print(program.program_status())
     exp["all_futures"] = all_futures
     exp_bytes = dill.dumps(exp)
-    client = boto3.client('s3')
+    # client = boto3.client('s3')
+    client = boto3.client('s3',
+                endpoint_url=minio_endpoint,
+                aws_access_key_id=minio_access,
+                aws_secret_access_key=minio_secret,
+                config=Config(signature_version='s3v4'),
+                region_name='us-east-1')
     client.put_object(Key="lambdapack/{0}/runtime.pickle".format(program.hash), Body=exp_bytes, Bucket=program.bucket)
     print("=======================")
     print("=======================")

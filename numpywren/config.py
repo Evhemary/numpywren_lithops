@@ -54,9 +54,9 @@ def default():
     then checks NUMPYWREN_CONFIG_FILE environment variable
     then ~/.numpywren_config
     """
-    if os.path.exists(".numpywren_config"):
-        config_filename = os.path.abspath('.numpywren_config')
-    else:
+    if os.path.exists(".lithops_config"):
+    #     config_filename = os.path.abspath('.numpywren_config')
+    # else:
         config_filename = os.path.abspath('.lithops_config')
     # config_filename = get_default_config_filename()
     if config_filename is None:

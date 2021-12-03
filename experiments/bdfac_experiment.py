@@ -22,7 +22,10 @@ import lithops
 INFO_FREQ = 5
 
 try:
+    DEFAULT_BUCKET = npw.config.default()['s3']['storage_bucket']
+    DEFAULT_REGION = npw.config.default()['account']['aws_region']
     minio_endpoint = npw.config.lithops_config()['minio']['endpoint']
+    minio_bucket = npw.config.lithops_config()['minio']['storage_bucket']
     minio_access = npw.config.lithops_config()['minio']['access_key']
     minio_secret = npw.config.lithops_config()['minio']['secret_key']
 except Exception as e:
@@ -78,7 +81,7 @@ def run_experiment(problem_size, shard_size, pipeline, num_priorities, lru, eage
         X = np.random.randn(problem_size, 1)
         shard_sizes = [shard_size, 1]
         X_sharded = BigMatrix("qr_test_{0}_{1}".format(problem_size, shard_size), shape=X.shape,
-                              shard_sizes=shard_sizes, write_header=True, autosqueeze=False, bucket=config['s3']['bucket'])
+                              shard_sizes=shard_sizes, write_header=True, autosqueeze=False, bucket=minio_bucket)
         shard_matrix(X_sharded, X)
         print("Generating PSD matrix...")
         t = time.time()
@@ -90,7 +93,7 @@ def run_experiment(problem_size, shard_size, pipeline, num_priorities, lru, eage
         X_sharded = BigMatrix("qr_test_{0}_{1}".format(problem_size, shard_size), autosqueeze=False,
                               bucket="numpywrennsdi")
         key_name = binops.generate_key_name_binop(X_sharded, X_sharded.T, "gemm")
-        XXT_sharded = BigMatrix(key_name, hash_keys=False, bucket=config['s3']['bucket'])
+        XXT_sharded = BigMatrix(key_name, hash_keys=False, bucket=minio_bucket)
     XXT_sharded.lambdav = problem_size * 10
     t = time.time()
     program, meta = bdfac(XXT_sharded, truncate=truncate)
@@ -346,7 +349,13 @@ def run_experiment(problem_size, shard_size, pipeline, num_priorities, lru, eage
     print(program.program_status())
     exp["all_futures"] = all_futures
     exp_bytes = dill.dumps(exp)
-    client = boto3.client('s3')
+    # client = boto3.client('s3')
+    client = boto3.client('s3',
+                endpoint_url=minio_endpoint,
+                aws_access_key_id=minio_access,
+                aws_secret_access_key=minio_secret,
+                config=Config(signature_version='s3v4'),
+                region_name='us-east-1')
     client.put_object(Key="lambdapack/{0}/runtime.pickle".format(program.hash), Body=exp_bytes, Bucket=program.bucket)
     print("=======================")
     print("=======================")

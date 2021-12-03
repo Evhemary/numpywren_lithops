@@ -394,7 +394,13 @@ class BigMatrix(object):
         key = self.__shard_idx_to_key__(block_idx)
         # session = aiobotocore.get_session()
         # async with boto3.client('s3', use_ssl=False, verify=False, region_name=self.region) as client:
-        client = boto3.client('s3')
+        # client = boto3.client('s3')
+        client = boto3.client('s3',
+                endpoint_url=minio_endpoint,
+                aws_access_key_id=minio_access,
+                aws_secret_access_key=minio_secret,
+                config=Config(signature_version='s3v4'),
+                region_name='us-east-1')
         resp = client.delete_object(Key=key, Bucket=self.bucket)
         return resp
 
@@ -467,7 +473,13 @@ class BigMatrix(object):
         return os.path.join(self.key_base, key_string)
 
     def __read_header__(self):
-        client = boto3.client('s3')
+        # client = boto3.client('s3')
+        client = boto3.client('s3',
+                endpoint_url=minio_endpoint,
+                aws_access_key_id=minio_access,
+                aws_secret_access_key=minio_secret,
+                config=Config(signature_version='s3v4'),
+                region_name='us-east-1')
         try:
             key = os.path.join(self.key_base, "header")
             print("get:"+self.bucket+"/"+key)
@@ -479,7 +491,13 @@ class BigMatrix(object):
 
     def __delete_header__(self):
         key = os.path.join(self.key_base, "header")
-        client = boto3.client('s3')
+        # client = boto3.client('s3')
+        client = boto3.client('s3',
+                endpoint_url=minio_endpoint,
+                aws_access_key_id=minio_access,
+                aws_secret_access_key=minio_secret,
+                config=Config(signature_version='s3v4'),
+                region_name='us-east-1')
         client.delete_object(Bucket=self.bucket, Key=key)
 
     def __block_idx_to_real_idx__(self, block_idx):
@@ -505,7 +523,13 @@ class BigMatrix(object):
         # session = aiobotocore.get_session()
         # async with session.create_client('s3', use_ssl=False, verify=False, region_name=self.region) as client:
         # async with boto3.client('s3', use_ssl=False, verify=False, region_name=self.region) as client:
-        client =  boto3.client('s3')
+        # client =  boto3.client('s3')
+        client = boto3.client('s3',
+                endpoint_url=minio_endpoint,
+                aws_access_key_id=minio_access,
+                aws_secret_access_key=minio_secret,
+                config=Config(signature_version='s3v4'),
+                region_name='us-east-1')
         n_tries = 0
         max_n_tries = 5
         bio = None
@@ -530,7 +554,13 @@ class BigMatrix(object):
 
         # session = aiobotocore.get_session()
         # async with session.create_client('s3', use_ssl=False, verify=False, region_name=self.region) as client:
-        client = boto3.client('s3')
+        # client = boto3.client('s3')
+        client = boto3.client('s3',
+                endpoint_url=minio_endpoint,
+                aws_access_key_id=minio_access,
+                aws_secret_access_key=minio_secret,
+                config=Config(signature_version='s3v4'),
+                region_name='us-east-1')
         # async with boto3.client('s3', use_ssl=False, verify=False, region_name=self.region) as client:
 
         outb = io.BytesIO()
@@ -539,15 +569,21 @@ class BigMatrix(object):
         print("put:"+self.bucket+"/"+out_key)
         response = client.put_object(Key=out_key,
                                            Bucket=self.bucket,
-                                           Body=outb.getvalue(),
-                                           ACL="bucket-owner-full-control")
+                                           Body=outb.getvalue())
+                                        #    ACL="bucket-owner-full-control")
         del outb
         del X
         return None
 
     def __write_header__(self):
         key = os.path.join(self.key_base, "header")
-        client = boto3.client('s3')
+        # client = boto3.client('s3')
+        client = boto3.client('s3',
+                endpoint_url=minio_endpoint,
+                aws_access_key_id=minio_access,
+                aws_secret_access_key=minio_secret,
+                config=Config(signature_version='s3v4'),
+                region_name='us-east-1')
         header = {}
         header['shape'] = self.shape
         header['shard_sizes'] = self.shard_sizes
@@ -555,8 +591,8 @@ class BigMatrix(object):
         print("put:"+self.bucket+"/"+key)
         client.put_object(Key=key,
                           Bucket=self.bucket,
-                          Body=json.dumps(header),
-                          ACL="bucket-owner-full-control")
+                          Body=json.dumps(header))
+                        #   ACL="bucket-owner-full-control")
 
     def __encode_dtype__(self, dtype):
         dtype_pickle = pickle.dumps(dtype)
@@ -824,7 +860,13 @@ class RowPivotedBigMatrix(BigMatrix):
 
         # session = aiobotocore.get_session(loop=loop)
         # async with boto3.client('s3', use_ssl=False, verify=False, region_name=self.region) as client:
-        client = boto3.client('s3')
+        # client = boto3.client('s3')
+        client = boto3.client('s3',
+                endpoint_url=minio_endpoint,
+                aws_access_key_id=minio_access,
+                aws_secret_access_key=minio_secret,
+                config=Config(signature_version='s3v4'),
+                region_name='us-east-1')
         n_tries = 0
         max_n_tries = 5
         bio = None

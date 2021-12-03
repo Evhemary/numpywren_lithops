@@ -31,7 +31,16 @@ from . import matrix
 # except:
 
 DEFAULT_CONFIG = npw.config.default()
-minio_endpoint=DEFAULT_CONFIG['minio']['endpoint']
+try:
+    DEFAULT_BUCKET = npw.config.default()['minio']['endpoint']
+    DEFAULT_REGION = npw.config.default()['account']['aws_region']
+    minio_endpoint = npw.config.lithops_config()['minio']['endpoint']
+    minio_bucket = npw.config.lithops_config()['minio']['storage_bucket']
+    minio_access = npw.config.lithops_config()['minio']['access_key']
+    minio_secret = npw.config.lithops_config()['minio']['secret_key']
+except Exception as e:
+    DEFAULT_BUCKET = npw.config.default()['s3']['storage_bucket']
+    DEFAULT_REGION = npw.config.default()['account']['aws_region']
 logger = logging.getLogger(__name__)
 
 
@@ -65,7 +74,13 @@ class ProgramStatus(Enum):
 def put(key, value, s3=True, s3_bucket="lithops-numpywren-exp"):
     # print(key, value)
     if (s3):
-        client = boto3.client('s3')
+        # client = boto3.client('s3')
+        client = boto3.client('s3',
+                endpoint_url=minio_endpoint,
+                aws_access_key_id=minio_access,
+                aws_secret_access_key=minio_secret,
+                config=Config(signature_version='s3v4'),
+                region_name='us-east-1')
         # obj = bytes(value)
         print("put:"+s3_bucket+"/"+key)
         client.put_object(Bucket=s3_bucket, Key=key, Body=str(value))
@@ -80,14 +95,26 @@ def put(key, value, s3=True, s3_bucket="lithops-numpywren-exp"):
             })
 
 def upload(key, bucket, data):
-    client = boto3.client('s3')
+    # client = boto3.client('s3')
+    client = boto3.client('s3',
+                endpoint_url=minio_endpoint,
+                aws_access_key_id=minio_access,
+                aws_secret_access_key=minio_secret,
+                config=Config(signature_version='s3v4'),
+                region_name='us-east-1')
     print("put:"+s3_bucket+"/"+key)
     client.put_object(Bucket=bucket, Key=key, Body=data)
 
 
 def get(key, s3=True, s3_bucket="lithops-numpywren-exp"):
     if (s3):
-        client = boto3.client('s3')
+        # client = boto3.client('s3')
+        client = boto3.client('s3',
+                endpoint_url=minio_endpoint,
+                aws_access_key_id=minio_access,
+                aws_secret_access_key=minio_secret,
+                config=Config(signature_version='s3v4'),
+                region_name='us-east-1')
         print("get:"+s3_bucket+"/"+key)
         obj = client.get_object(Bucket=s3_bucket, Key=key)
         obj2 = obj['Body'].read()
@@ -687,7 +714,13 @@ class LambdaPackProgram(object):
             return 0
 
     def stop(self):
-        client = boto3.client('s3')
+        # client = boto3.client('s3')
+        client = boto3.client('s3',
+                endpoint_url=minio_endpoint,
+                aws_access_key_id=minio_access,
+                aws_secret_access_key=minio_secret,
+                config=Config(signature_version='s3v4'),
+                region_name='us-east-1')
         client.put_object(Key="lambdapack/" + self.hash + "/EXCEPTION.DRIVER.CANCELLED", Bucket=self.bucket,
                           Body="cancelled by driver")
         e = PS.EXCEPTION.value
@@ -698,7 +731,13 @@ class LambdaPackProgram(object):
         put(self.hash, PS.SUCCESS.value,s3 = False)
 
     def handle_exception(self, error, tb, expr_idx, var_values):
-        client = boto3.client('s3')
+        # client = boto3.client('s3')
+        client = boto3.client('s3',
+                endpoint_url=minio_endpoint,
+                aws_access_key_id=minio_access,
+                aws_secret_access_key=minio_secret,
+                config=Config(signature_version='s3v4'),
+                region_name='us-east-1')
         client.put_object(Key="lambdapack/" + self.hash + "/EXCEPTION.{0}".format(self._node_str(expr_idx, var_values)),
                           Bucket=self.bucket, Body=tb + str(error))
         e = PS.EXCEPTION.value
@@ -808,7 +847,13 @@ class LambdaPackProgram(object):
 
     def get_profiling_info(self, expr_idx, var_values):
         try:
-            client = boto3.client('s3')
+            # client = boto3.client('s3')
+            client = boto3.client('s3',
+                endpoint_url=minio_endpoint,
+                aws_access_key_id=minio_access,
+                aws_secret_access_key=minio_secret,
+                config=Config(signature_version='s3v4'),
+                region_name='us-east-1')
             byte_string = \
             client.get_object(Bucket=self.bucket, Key="lambdapack/{0}/{1}_{2}".format(self.hash, expr_idx, var_values))[
                 "Body"].read()

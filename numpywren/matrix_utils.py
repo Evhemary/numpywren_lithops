@@ -100,7 +100,13 @@ def load_mmap(mmap_loc, mmap_shape, mmap_dtype):
 
 
 def list_all_keys(bucket, prefix):
-    client = boto3.client('s3')
+    # client = boto3.client('s3')
+    client = boto3.client('s3',
+                endpoint_url=minio_endpoint,
+                aws_access_key_id=minio_access,
+                aws_secret_access_key=minio_secret,
+                config=Config(signature_version='s3v4'),
+                region_name='us-east-1')
     objects = client.list_objects(Bucket=bucket, Prefix=prefix + "/", Delimiter=prefix)
     if (objects.get('Contents') == None):
         return []
@@ -118,7 +124,13 @@ def list_all_keys(bucket, prefix):
 
 def key_exists(bucket, key):
     '''Return true if a key exists in s3 bucket'''
-    client = boto3.client('s3')
+    # client = boto3.client('s3')
+    client = boto3.client('s3',
+                endpoint_url=minio_endpoint,
+                aws_access_key_id=minio_access,
+                aws_secret_access_key=minio_secret,
+                config=Config(signature_version='s3v4'),
+                region_name='us-east-1')
     try:
         obj = client.head_object(Bucket=bucket, Key=key)
         return True
@@ -131,15 +143,21 @@ def key_exists(bucket, key):
 async def key_exists_async(bucket, key, loop=None):
     '''Return true if a key exists in s3 bucket'''
     # session = aiobotocore.get_session()
-    async with boto3.client('s3', use_ssl=False, verify=False) as client:
-        try:
-            obj = await client.head_object(Bucket=bucket, Key=key)
-            resp = True
-        except botocore.exceptions.ClientError as exc:
-            if exc.response['Error']['Code'] != '404':
+    # async with boto3.client('s3', use_ssl=False, verify=False) as client:
+    client = boto3.client('s3',
+                endpoint_url=minio_endpoint,
+                aws_access_key_id=minio_access,
+                aws_secret_access_key=minio_secret,
+                config=Config(signature_version='s3v4'),
+                region_name='us-east-1')
+    try:
+        obj = await client.head_object(Bucket=bucket, Key=key)
+        resp = True
+    except botocore.exceptions.ClientError as exc:
+        if exc.response['Error']['Code'] != '404':
                 raise
-            else:
-                resp = False
+        else:
+            resp = False
     return resp
 
 

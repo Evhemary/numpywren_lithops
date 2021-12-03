@@ -10,9 +10,13 @@ import time
 
 
 def cholesky(X, truncate=0):
+    # start = datetime.datetime.now()
     S = BigMatrix("Cholesky.Intermediate({0})".format(X.key), shape=(X.num_blocks(1)+1, X.shape[0], X.shape[0]), shard_sizes=(1, X.shard_sizes[0], X.shard_sizes[0]), bucket=X.bucket, write_header=True, parent_fn=constant_zeros)
     #S.free()
     O = BigMatrix("Cholesky({0})".format(X.key), shape=(X.shape[0], X.shape[0]), shard_sizes=(X.shard_sizes[0], X.shard_sizes[0]), write_header=True, parent_fn=constant_zeros)
+    # end = datetime.datetime.now()
+    # get_duration = (t3 - t2).microseconds/1000
+    # print('get_duration: '+str(get_duration)+'ms')
     t = time.time()
     p0= lpcompile_for_execution(CHOLESKY, inputs=["I"], outputs=["O"])
     p1 = p0(O,X,S,int(np.ceil(X.shape[0]/X.shard_sizes[0])), truncate)
