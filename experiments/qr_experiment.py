@@ -9,10 +9,11 @@ from numpywren import job_runner
 import numpywren.binops as binops
 import time
 import boto3
+from botocore.config import Config
 import pickle
 import hashlib
 import logging
-import pywren.wrenconfig as wc
+# import pywren.wrenconfig as wc
 from numpywren.alg_wrappers import cholesky, tsqr, gemm, qr
 import numpywren as npw
 import dill
@@ -24,15 +25,15 @@ import lithops
 INFO_FREQ = 5
 
 try:
-    DEFAULT_BUCKET = npw.config.default()['s3']['storage_bucket']
-    DEFAULT_REGION = npw.config.default()['account']['aws_region']
+    DEFAULT_BUCKET = npw.config.default()['aws_s3']['storage_bucket']
+    DEFAULT_REGION = npw.config.default()['account']['region_name']
     minio_endpoint = npw.config.lithops_config()['minio']['endpoint']
     minio_bucket = npw.config.lithops_config()['minio']['storage_bucket']
-    minio_access = npw.config.lithops_config()['minio']['access_key']
-    minio_secret = npw.config.lithops_config()['minio']['secret_key']
+    minio_access = npw.config.lithops_config()['minio']['secret_access_key']
+    minio_secret = npw.config.lithops_config()['minio']['access_key_id']    
 except Exception as e:
-    DEFAULT_BUCKET = ""
-    DEFAULT_REGION = ""
+    DEFAULT_BUCKET = npw.config.default()['aws_s3']['storage_bucket']
+    DEFAULT_REGION = npw.config.default()['account']['region_name']
 
 def parse_int(x):
     if x is None: return 0

@@ -14,6 +14,7 @@ import asyncio
 import boto3
 import botocore
 import botocore.exceptions
+from botocore.config import Config
 import json
 import numpy as np
 import lithops
@@ -32,15 +33,15 @@ from . import matrix
 
 DEFAULT_CONFIG = npw.config.default()
 try:
-    DEFAULT_BUCKET = npw.config.default()['minio']['endpoint']
-    DEFAULT_REGION = npw.config.default()['account']['aws_region']
+    DEFAULT_BUCKET = npw.config.default()['aws_s3']['storage_bucket']
+    DEFAULT_REGION = npw.config.default()['account']['region_name']
     minio_endpoint = npw.config.lithops_config()['minio']['endpoint']
     minio_bucket = npw.config.lithops_config()['minio']['storage_bucket']
-    minio_access = npw.config.lithops_config()['minio']['access_key']
-    minio_secret = npw.config.lithops_config()['minio']['secret_key']
+    minio_access = npw.config.lithops_config()['minio']['secret_access_key']
+    minio_secret = npw.config.lithops_config()['minio']['access_key_id']    
 except Exception as e:
-    DEFAULT_BUCKET = npw.config.default()['s3']['storage_bucket']
-    DEFAULT_REGION = npw.config.default()['account']['aws_region']
+    DEFAULT_BUCKET = npw.config.default()['aws_s3']['storage_bucket']
+    DEFAULT_REGION = npw.config.default()['account']['region_name']
 logger = logging.getLogger(__name__)
 
 

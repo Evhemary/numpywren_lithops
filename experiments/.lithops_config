@@ -1,7 +1,7 @@
 # Change to .lithops_config after filling in the data
 lithops:
     backend: aws_lambda
-    storage: aws_s3
+    storage: minio
     #storage_bucket: bogdan-pywren-830
     log_level: DEBUG # One of: WARNING, INFO, DEBUG, ERROR, CRITICAL
     data_cleaner: False
@@ -12,11 +12,9 @@ lithops:
 #    runtime_memory: 2048 # 1792MB provides 1 full vCPU
 #    runtime_timeout: 900 # 15 minutes, for those long low parallelism experiments
 
-
 account:
     account_id: <account_id>
-    aws_region: us-east-1
-
+    region_name: us-east-1
 
 aws:
     access_key_id: <access_key_id>
@@ -32,12 +30,12 @@ aws_lambda:
 aws_s3:
     storage_bucket: lithops-experiment
     region_name: us-east-1
-
-#minio:
-#	storage_bucket:<Bucket_Name>
-#	endpoint:<Endpoint_url>
-#	access_key:minioadmin
-#	secret_key:minioadmin
+    
+minio:
+    storage_bucket: mybucket
+    endpoint: http://172.18.0.1:40975
+    access_key: minioadmin
+    secret_key: minioadmin
 
 #control_plane:
 #  control_plane_prefix: numpywren.control

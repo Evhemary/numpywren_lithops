@@ -4,7 +4,9 @@ import time
 
 import boto3
 import botocore
+from botocore.config import Config
 import numpy as np
+import numpywren as npw
 import hashlib
 import pickle
 import inspect
@@ -14,14 +16,15 @@ import multiprocessing
 
 cpu_count = multiprocessing.cpu_count()
 try:
-    DEFAULT_BUCKET = npw.config.default()['s3']['bucket']
-    DEFAULT_REGION = npw.config.default()['account']['aws_region']
-    minio_endpoint = npw.config.default()['minio']['endpoint']
-    minio_access = npw.config.default()['minio']['access_key']
-    minio_secret = npw.config.default()['minio']['secret_key']
+    DEFAULT_BUCKET = npw.config.default()['aws_s3']['storage_bucket']
+    DEFAULT_REGION = npw.config.default()['account']['region_name']
+    minio_endpoint = npw.config.lithops_config()['minio']['endpoint']
+    minio_bucket = npw.config.lithops_config()['minio']['storage_bucket']
+    minio_access = npw.config.lithops_config()['minio']['secret_access_key']
+    minio_secret = npw.config.lithops_config()['minio']['access_key_id']    
 except Exception as e:
-    DEFAULT_BUCKET = ""
-    DEFAULT_REGION = ""
+    DEFAULT_BUCKET = npw.config.default()['aws_s3']['storage_bucket']
+    DEFAULT_REGION = npw.config.default()['account']['region_name']
 
 class MmapArray():
     def __init__(self, mmaped, mode=None, idxs=None):
